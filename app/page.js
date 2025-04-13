@@ -10,8 +10,8 @@ export default function Home() {
           alt="STRATA SCHEMES MANAGEMENT ACT 2015"
           layout="intrinsic"
           width={300}
-          height={100} // adjust based on original aspect ratio
-          objectFit="contain" // ensures it fits without cropping
+          height={100} 
+          objectFit="contain" 
         />
         </div>   
         <ol className="list-inside list-decimal text-xl text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
@@ -24,8 +24,6 @@ export default function Home() {
         - As at 2 March 2025
         </li>
       </ol>
-
-        {/* ✅ Add links to subpages */}
         <a
           href="/apage.html"
           className="text-sm underline text-blue-600 hover:text-blue-800"

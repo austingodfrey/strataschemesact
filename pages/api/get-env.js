@@ -2,7 +2,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const msg = process.env.NEXT_PUBLIC_SUBMITTED || "No message set";
   
-      console.log("✅ Loaded ENV (Serverless):", msg);
+      console.log("Loaded environmental variable through serverless function", msg);
   
       return res.status(200).json({ message: msg });
     } else {

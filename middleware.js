@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-//edge function by default cause middleware runs on edge uses request.headers 
 export function middleware(request) {
   const ua = request.headers.get('user-agent') || '';
   const url = request.nextUrl.clone();
@@ -8,7 +7,7 @@ export function middleware(request) {
   const isBot = botPatterns.some(bot => ua.toLowerCase().includes(bot));
 
   if (isBot) {
-    console.warn("🤖 Bot blocked:", ua);
+    console.warn(" Bot blocked:", ua);
     return new Response("Access denied", { status: 403 });
   }
 

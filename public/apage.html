@@ -65,8 +65,6 @@
 <body>
   <h1>Feedback Form</h1>
   <p>Please fill out the form below and we will get back to you.</p>
-
-  <!-- Feedback Form -->
   <form id="feedbackForm">
     <div class="section">
       <label for="fname">Your Name</label><br />
@@ -86,7 +84,7 @@
     <div class="section">
       <p>Type of Report</p>
       <label><input type="radio" name="q1" value="Fault_Report" class="radio" /> Fault Report</label><br />
-      <label><input type="radio" name="q1" value="Content_Request" class="radio" /> Content Request</label><br />
+      <label><input type="radio" name="q1" `alue="Content_Request" class="radio" /> Content Request</label><br />
       <label><input type="radio" name="q1" value="Feature_Request" class="radio" /> Feature Request</label><br />
       <label><input type="radio" name="q1" value="General_Comment" class="radio" /> General Comment</label>
     </div>
@@ -127,10 +125,10 @@
         });
 
         const data = await res.json();
-        alert(data.reply || "✅ Feedback submitted successfully!");
+        alert(data.reply || "Feedback submitted successfully!");
       } catch (err) {
         console.error("Error:", err);
-        alert("❌ There was an error submitting your feedback.");
+        alert("There was an error submitting your feedback.");
       }
     });
   </script>

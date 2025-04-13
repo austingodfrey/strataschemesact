@@ -54,7 +54,7 @@
         const data = await res.json();
         document.getElementById("message").textContent = data.message;
       } catch (err) {
-        document.getElementById("message").textContent = "⚠️ Failed to load message";
+        document.getElementById("message").textContent = "Failed to load message";
       }
     }
 
@@ -65,7 +65,7 @@
     document.getElementById("notice").textContent = data.message;
     document.getElementById("timestamp").textContent = `Last updated: ${data.timestamp}`;
   } catch (err) {
-    document.getElementById("notice").textContent = "⚠️ Failed to load notice";
+    document.getElementById("notice").textContent = "Failed to load notice";
   }
 }
 

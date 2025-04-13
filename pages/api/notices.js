@@ -17,7 +17,7 @@ export const config = {
         }
       );
     } catch (err) {
-      console.error("❌ Edge Function Error:", err);
+      console.error("Edge function broken:", err);
       return new Response(
         JSON.stringify({ error: "Internal server error", detail: err.message }),
         {
