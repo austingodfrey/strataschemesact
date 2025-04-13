@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notices + Messages</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .box {
+      font-size: 1.2rem;
+      color: #333;
+      background: #e0f7ff;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      margin: 0.75rem;
+      max-width: 600px;
+    }
+
+    h2 {
+      margin-bottom: 0.5rem;
+      color: #0070f3;
+    }
+  </style>
+</head>
+<body>
+  <h1>📢 Strata Info Center</h1>
+
+  <div class="box">
+    <h2>📬 Notice Status</h2>
+    <div id="message">Loading...</div>
+  </div>
+
+  <div class="box">
+    <h2>🚨 Notice</h2>
+    <div id="notice">Loading...</div>
+    <div id="timestamp"></div>
+  </div>
+
+  <script>
+    async function loadMessage() {
+      try {
+        const res = await fetch("/api/get-env");
+        const data = await res.json();
+        document.getElementById("message").textContent = data.message;
+      } catch (err) {
+        document.getElementById("message").textContent = "⚠️ Failed to load message";
+      }
+    }
+
+    async function loadNotice() {
+  try {
+    const res = await fetch("/api/notices");
+    const data = await res.json();
+    document.getElementById("notice").textContent = data.message;
+    document.getElementById("timestamp").textContent = `Last updated: ${data.timestamp}`;
+  } catch (err) {
+    document.getElementById("notice").textContent = "⚠️ Failed to load notice";
+  }
+}
+
+    // Load both when page loads
+    loadMessage();
+    loadNotice();
+  </script>
+</body>
+</html>
