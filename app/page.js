@@ -58,6 +58,12 @@ export default function Home() {
         >
           STRATA SCHEMES MANAGEMENT ACT PART 3
         </a>
+        <a
+          href="/api/index.php"
+          className="text-sm underline text-green-600 hover:text-green-800"
+        >
+          Login
+        </a>
       </main>
     </div>
   );
