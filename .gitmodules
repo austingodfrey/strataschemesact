@@ -1,0 +1,3 @@
+[submodule "api/_vercel_php"]
+	path = api/_vercel_php
+	url = https://github.com/vercel-community/php

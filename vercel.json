@@ -1,6 +1,14 @@
 {
-    "cleanUrls": true,
-    "trailingSlash": false,
+  "functions": {
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.3"
+    }
+  },
+  "routes": [
+    {
+      "src": "/php/(.*)",
+      "dest": "/api/$1"
+    }
+  ],
     "regions": ["syd1"]
   }
-  
