@@ -10,9 +10,17 @@
   },
   "dependencies": {
     "@payloadcms/storage-vercel-blob": "^3.11",
+    "@upstash/redis": "^1.34.9",
+    "@vercel/blob": "^1.0.1",
+    "@vercel/kv": "^3.0.0",
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^11.10.0",
+    "cookie": "^1.0.2",
     "next": "15.2.4",
+    "payload": "^3.37.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sqlite": "^5.1.1",
     "vercel-php": "^0.7.3"
   },
   "devDependencies": {

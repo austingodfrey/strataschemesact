@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Feedback Form</title>
+  <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
@@ -63,25 +63,23 @@
   </style>
 </head>
 <body>
-  <h1>Login</h1>
-  <p>Please type in your username and password.</p>
+  <h1>Log in</h1>
+  <p>Please input your login details.</p>
   <form id="feedbackForm">
     <div class="section">
-      <label for="fname">Your Name</label><br />
-      <input type="text" id="fname" name="fname" />
+      <label for="fname">username</label><br />
+      <input type="text" id="fusername" name="fname" />
     </div>
 
     <div class="section">
-      <label for="fpassword">password</label><br />
-      <input type="text" id="fpassword" name="fpassword" />
+        <label for="fname">password</label><br />
+        <input type="text" id="fpassword" name="password" />
     </div>
 
     <div class="section">
-      <label for="Email_Address">Email Address</label><br />
+      <label for="Email_Address">Your Email Address (must include if you want a reply)</label><br />
       <input type="email" id="Email_Address" name="email" />
     </div>
-
-
 
     <button type="submit">Submit</button>
   </form>
@@ -90,12 +88,9 @@
     src="https://www.nsw.gov.au/themes/custom/dcs_theme/favicons/sets/standard/logo.svg"
     alt="NSW GOV LOGO"
   />
-
-  <a href="/page7.html">Create an account</a> 
   <br />
-  <a href="/">← Back to Home</a>
-  
-
+  <a href="/">← Back to Home</a><br />
+  <a href="/page7.html">create an account</a>
   <script>
     document.getElementById("feedbackForm").addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -103,24 +98,25 @@
       const form = event.target;
 
       const formData = {
-        name: form.fname.value,
-        feedback: form.fdescription.value,
-      };
+        username: form.fusername.value,
+        email: form.Email_Address.value,
+        password: form.fpassword.value,
+    };
 
       form.reset();
 
       try {
-        const res = await fetch("/api/feedback-auto", {
+        const res = await fetch("/api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
 
         const data = await res.json();
-        alert(data.reply || "Feedback submitted successfully!");
+        alert(data.reply || "Logged in successfully!");
       } catch (err) {
         console.error("Error:", err);
-        alert("There was an error submitting your feedback.");
+        alert("User does not exist.");
       }
     });
   </script>

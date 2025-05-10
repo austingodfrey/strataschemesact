@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Feedback Form</title>
+  <title>Create an account</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
@@ -98,25 +98,25 @@
       const form = event.target;
 
       const formData = {
-        name: form.fname.value,
+        username: form.fusername.value,
         email: form.Email_Address.value,
-        password: form.fpassword.value
-      };
+        password: form.fpassword.value,
+    };
 
       form.reset();
 
       try {
-        const res = await fetch("/api/feedback-auto", {
+        const res = await fetch("/api/createuser", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
 
         const data = await res.json();
-        alert(data.reply || "Feedback submitted successfully!");
+        alert(data.reply || "Account created successfully!");
       } catch (err) {
         console.error("Error:", err);
-        alert("There was an error submitting your feedback.");
+        alert("There was an error creating your account.");
       }
     });
   </script>

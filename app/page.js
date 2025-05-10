@@ -62,14 +62,20 @@ export default function Home() {
           href="/api/index.php"
           className="text-sm underline text-green-600 hover:text-green-800"
         >
-          Strata PHP
+          strata php 
         </a>
-
         <a
           href="/page6.html"
           className="text-sm underline text-green-600 hover:text-green-800"
         >
-          login
+          Login
+        </a>
+
+        <a
+          href="/page8.html"
+          className="text-sm underline text-green-600 hover:text-green-800"
+        >
+          change password
         </a>
       </main>
     </div>

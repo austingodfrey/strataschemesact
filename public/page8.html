@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Change Password</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    input[type="password"] {
+      background-color: white;
+      color: black;
+      border: 2px solid #000;
+      border-radius: 5px;
+      padding: 8px;
+      width: 250px;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background-color: white;
+      border: 2px solid #000;
+      border-radius: 5px;
+      color: black;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Change Password</h1>
+  <p id="welcomeText"></p>
+
+  <form id="changeForm">
+    <input
+      type="password"
+      id="newPassword"
+      placeholder="Enter new password"
+      required
+    /><br />
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="message"></p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+      }
+
+      const username = getCookie("client_user");
+      const welcomeEl = document.getElementById("welcomeText");
+      const formEl = document.getElementById("changeForm");
+      const messageEl = document.getElementById("message");
+
+      if (!username) {
+        window.location.href = "/page6.html"; // 👈 Redirect to login if no cookie
+        return;
+      }
+
+      welcomeEl.textContent = `Logged in as ${username}`;
+
+      formEl.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const newPassword = document.getElementById("newPassword").value;
+
+        const response = await fetch("/api/change-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username, newPassword })
+        });
+
+        const data = await response.json();
+        messageEl.textContent = data.message || data.error;
+      });
+    });
+  </script>
+</body>
+</html>
