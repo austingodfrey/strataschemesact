@@ -32,40 +32,31 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Invalid credentials (password)' });
     }
 
-    // Prepare authentication cookies
+    // ✅ Create server-only session cookie
     const sessionCookie = serialize('session_user', username, {
       httpOnly: true,
       secure: true,
       path: '/',
-      maxAge: 60 * 60 * 24,
+      maxAge: 60 * 60 * 24, // 1 day
       sameSite: 'strict',
     });
 
-    const clientCookie = serialize('client_user', username, {
+    // ✅ Create merged client_user cookie (username + bgColor preference)
+    const clientPayload = JSON.stringify({
+      username,
+      ...(user.preference?.bgColor && { bgColor: user.preference.bgColor }),
+    });
+
+    const clientCookie = serialize('client_user', clientPayload, {
       httpOnly: false,
       secure: true,
       path: '/',
-      maxAge: 60 * 60 * 24,
+      maxAge: 60 * 60 * 24 * 30, // 30 days
       sameSite: 'strict',
     });
 
-    // Set preference cookie if it exists
-    const bgColor = user.preference?.bgColor;
-    const prefCookie = bgColor
-      ? serialize(`bgColor_${username}`, bgColor, {
-          httpOnly: false,
-          secure: true,
-          path: '/',
-          maxAge: 60 * 60 * 24 * 30, // 30 days
-          sameSite: 'strict',
-        })
-      : null;
-
-    // Apply all cookies
-    const cookieArray = [sessionCookie, clientCookie];
-    if (prefCookie) cookieArray.push(prefCookie);
-
-    res.setHeader('Set-Cookie', cookieArray);
+    // ✅ Send both cookies
+    res.setHeader('Set-Cookie', [sessionCookie, clientCookie]);
 
     return res.status(200).json({ reply: 'Login successful' });
 

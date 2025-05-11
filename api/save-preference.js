@@ -1,4 +1,5 @@
 import { kv } from '@vercel/kv';
+import { serialize } from 'cookie';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -23,18 +24,36 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Corrupted user data in store' });
     }
 
-    // Ensure the base structure
+    // Ensure valid user object
     if (typeof user !== 'object' || user === null) {
-      user = {};
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    // Merge preference
+    // Merge and update preference
     user.preference = {
       ...(user.preference || {}),
       ...preference
     };
 
+    // Save updated user back to KV
     await kv.set(key, user);
+
+    // Rebuild client_user cookie with updated preference
+    const clientPayload = JSON.stringify({
+      username,
+      ...(user.preference?.bgColor && { bgColor: user.preference.bgColor }),
+    });
+
+    const clientCookie = serialize('client_user', clientPayload, {
+      httpOnly: false,
+      secure: true,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: 'strict',
+    });
+
+    res.setHeader('Set-Cookie', clientCookie);
+
     return res.status(200).json({ message: 'Preference saved successfully' });
 
   } catch (err) {

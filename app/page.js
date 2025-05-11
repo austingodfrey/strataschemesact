@@ -9,13 +9,20 @@ export default function Home() {
   useEffect(() => {
     const match = document.cookie.match(/(?:^|; )client_user=([^;]*)/);
     if (match) {
-      setUsername(decodeURIComponent(match[1]));
+      try {
+        const parsed = JSON.parse(decodeURIComponent(match[1]));
+        if (parsed?.username) {
+          setUsername(parsed.username);
+        }
+      } catch (err) {
+        console.warn("Failed to parse client_user cookie:", err);
+      }
     }
   }, []);
 
   return (
     <div className="relative min-h-screen p-8 pb-20 font-[family-name:var(--font-geist-sans)]">
-
+      
       {/* 🔧 Top-right settings link */}
       {username && (
         <a
@@ -28,6 +35,7 @@ export default function Home() {
 
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 sm:p-20">
         <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+
           <div style={{ position: "relative", width: "300px", height: "auto" }}>
             <Image
               src="/strata.png"
@@ -39,20 +47,21 @@ export default function Home() {
             />
           </div>
 
-                    {/* 👤 Conditionally show username or Login */}
-          <div>{username ? (
-            <p className="text-sm text-gray-800">Logged in as <strong>{username}</strong></p>
-          ) : (
-            <a href="/page6.html" className="text-sm underline text-green-600 hover:text-green-800">
-              Login
-            </a>
-          )}
+          {/* 👤 Conditionally show username or Login */}
+          <div>
+            {username ? (
+              <p className="text-sm text-gray-800">
+                Logged in as <strong>{username}</strong>
+              </p>
+            ) : (
+              <a href="/page6.html" className="text-sm underline text-green-600 hover:text-green-800">
+                Login
+              </a>
+            )}
           </div>
-          
+
           <ol className="list-inside list-decimal text-xl text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-            <li className="mb-2 tracking-[-.01em]">
-              STRATA SCHEMES MANAGEMENT ACT 2015
-            </li>
+            <li className="mb-2 tracking-[-.01em]">STRATA SCHEMES MANAGEMENT ACT 2015</li>
             <li className="tracking-[-.01em]">- As at 2 March 2025</li>
           </ol>
 
@@ -74,9 +83,6 @@ export default function Home() {
           <a href="/api/index.php" className="text-sm underline text-green-600 hover:text-green-800">
             strata php
           </a>
-
-
-
           <a href="/page8.html" className="text-sm underline text-green-600 hover:text-green-800">
             Change Password
           </a>
