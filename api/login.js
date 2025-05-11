@@ -32,16 +32,15 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Invalid credentials (password)' });
     }
 
-    // Set secure httpOnly cookie (not accessible via JS)
+    // Prepare authentication cookies
     const sessionCookie = serialize('session_user', username, {
       httpOnly: true,
       secure: true,
       path: '/',
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24,
       sameSite: 'strict',
     });
 
-    // Set non-httpOnly cookie for client-side access
     const clientCookie = serialize('client_user', username, {
       httpOnly: false,
       secure: true,
@@ -50,7 +49,23 @@ export default async function handler(req, res) {
       sameSite: 'strict',
     });
 
-    res.setHeader('Set-Cookie', [sessionCookie, clientCookie]);
+    // Set preference cookie if it exists
+    const bgColor = user.preference?.bgColor;
+    const prefCookie = bgColor
+      ? serialize(`bgColor_${username}`, bgColor, {
+          httpOnly: false,
+          secure: true,
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30, // 30 days
+          sameSite: 'strict',
+        })
+      : null;
+
+    // Apply all cookies
+    const cookieArray = [sessionCookie, clientCookie];
+    if (prefCookie) cookieArray.push(prefCookie);
+
+    res.setHeader('Set-Cookie', cookieArray);
 
     return res.status(200).json({ reply: 'Login successful' });
 

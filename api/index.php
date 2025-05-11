@@ -1,4 +1,13 @@
-<?php ?>
+<?php
+const user = document.cookie
+.split('; ')
+.find(c => c.startsWith('client_user='))
+?.split('=')[1];
+
+if (user) {
+document.getElementById("welcomeText").textContent = `Welcome, ${user}`;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,5 +25,7 @@
 </head>
 <body>
   <h1 class="cursive-title">STRATA SCHEMES MANAGEMENT ACT 2015</h1>
+  <script src="/scripts/apply-theme.js"></script>
 </body>
-</html>
+
+</html> 

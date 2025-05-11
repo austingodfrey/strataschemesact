@@ -60,11 +60,19 @@
       width: 200px;
       height: 100px;
     }
+
+    #loginNotice {
+      color: red;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>Feedback Form</h1>
+  <p id="welcomeText"></p>
   <p>Please fill out the form below and we will get back to you.</p>
+
   <form id="feedbackForm">
     <div class="section">
       <label for="fname">Your Name</label><br />
@@ -84,7 +92,7 @@
     <div class="section">
       <p>Type of Report</p>
       <label><input type="radio" name="q1" value="Fault_Report" class="radio" /> Fault Report</label><br />
-      <label><input type="radio" name="q1" `alue="Content_Request" class="radio" /> Content Request</label><br />
+      <label><input type="radio" name="q1" value="Content_Request" class="radio" /> Content Request</label><br />
       <label><input type="radio" name="q1" value="Feature_Request" class="radio" /> Feature Request</label><br />
       <label><input type="radio" name="q1" value="General_Comment" class="radio" /> General Comment</label>
     </div>
@@ -97,6 +105,8 @@
     <button type="submit">Submit</button>
   </form>
 
+  <p id="loginNotice"></p>
+
   <img
     src="https://www.nsw.gov.au/themes/custom/dcs_theme/favicons/sets/standard/logo.svg"
     alt="NSW GOV LOGO"
@@ -105,8 +115,38 @@
   <a href="/">← Back to Home</a>
 
   <script>
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const username = getCookie("client_user");
+      if (!username) {
+        document.getElementById("feedbackForm").style.display = "none";
+        document.getElementById("loginNotice").textContent = "⚠️ You must be logged in to submit feedback.";
+        return;
+      }
+
+      document.getElementById("welcomeText").textContent = `Logged in as ${username}`;
+
+      const userColor = getCookie(`bgColor_${username}`);
+      if (userColor) {
+        document.body.style.backgroundColor = userColor;
+
+        const darkColors = ["#121212", "#000000", "#1a1a1a"];
+        document.body.style.color = darkColors.includes(userColor.toLowerCase()) ? "white" : "black";
+      }
+    });
+
     document.getElementById("feedbackForm").addEventListener("submit", async function (event) {
       event.preventDefault();
+
+      const username = getCookie("client_user");
+      if (!username) {
+        alert("You must be logged in to submit feedback.");
+        return;
+      }
 
       const form = event.target;
 

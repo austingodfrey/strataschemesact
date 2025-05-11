@@ -72,6 +72,26 @@
     // Load both when page loads
     loadMessage();
     loadNotice();
+    document.addEventListener("DOMContentLoaded", applyUserBackground);
+
+window.addEventListener("storage", (event) => {
+  if (event.key === "bgColorUpdate") {
+    location.reload(); // 🔁 Force reload when setting is updated
+  }
+});
+
+function applyUserBackground() {
+  const username = document.cookie.match(/client_user=([^;]+)/)?.[1];
+  if (!username) return;
+
+  const match = document.cookie.match(new RegExp(`bgColor_${username}=([^;]+)`));
+  const color = match ? decodeURIComponent(match[1]) : null;
+
+  if (color) {
+    document.body.style.backgroundColor = color;
+  }
+}
   </script>
-</body>
+  <script src="/scripts/apply-theme.js"></script>
+</body> 
 </html>

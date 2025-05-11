@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    input[type="password"] {
+      background-color: white;
+      color: black;
+      border: 2px solid #000;
+      border-radius: 5px;
+      padding: 8px;
+      width: 250px;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background-color: white;
+      border: 2px solid #000;
+      border-radius: 5px;
+      color: black;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Change Password & Settings</h1>
+  <p id="welcomeText"></p>
+
+  <select id="bgColorSelect">
+    <option value="#ffffff">White</option>
+    <option value="#f9f9f9">Light Gray</option>
+    <option value="#121212">Dark</option>
+  </select>
+  <button onclick="savePreference()">Save</button>
+
+  <button onclick="logout()">Logout</button>
+
+  <p id="message"></p>
+
+  <script>
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function savePreference() {
+      const color = document.getElementById("bgColorSelect").value;
+      const username = getCookie("client_user");
+      if (!username) return;
+
+      // Save to cookie for immediate application
+      document.cookie = `bgColor_${username}=${color}; path=/; max-age=31536000`;
+      localStorage.setItem("bgColorUpdate", Date.now());
+
+      // Save to backend for persistence
+      fetch("/api/save-preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, preference: { bgColor: color } })
+      })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("message").textContent = data.message || data.error;
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error("Error saving preference:", err);
+          document.getElementById("message").textContent = "Error saving preference.";
+        });
+    }
+
+    function logout() {
+      fetch("/api/logout", { method: "POST" })
+        .then(() => {
+          window.location.href = "/";
+        })
+        .catch((err) => {
+          console.error("Logout failed:", err);
+          alert("Error logging out.");
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const username = getCookie("client_user");
+      if (!username) {
+        document.getElementById("welcomeText").textContent = "You are not logged in.";
+        return;
+      }
+
+      document.getElementById("welcomeText").textContent = `Logged in as ${username}`;
+
+      const userColor = getCookie(`bgColor_${username}`);
+      if (userColor) {
+        document.body.style.backgroundColor = userColor;
+
+        const darkColors = ["#121212", "#000000", "#1a1a1a"];
+        if (darkColors.includes(userColor.toLowerCase())) {
+          document.body.style.color = "white";
+        } else {
+          document.body.style.color = "black";
+        }
+      }
+    });
+  </script>
+
+  <a href="/">← Back to Home</a>
+</body>
+</html>
