@@ -1,13 +1,4 @@
-<?php
-const user = document.cookie
-.split('; ')
-.find(c => c.startsWith('client_user='))
-?.split('=')[1];
-
-if (user) {
-document.getElementById("welcomeText").textContent = `Welcome, ${user}`;
-}
-?>
+<?php?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
