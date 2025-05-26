@@ -7,6 +7,7 @@ export default function Home() {
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
+    // Safely get and decode the cookie
     const match = document.cookie.match(/(?:^|; )client_user=([^;]*)/);
     if (match) {
       try {
@@ -21,9 +22,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative min-h-screen p-8 pb-20 font-[family-name:var(--font-geist-sans)]">
-      
-      {/* 🔧 Top-right settings link */}
+    <div className="relative min-h-screen p-8 pb-20 font-sans">
+      {/* Top-right Settings link */}
       {username && (
         <a
           href="/settings.html"
@@ -34,20 +34,20 @@ export default function Home() {
       )}
 
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 sm:p-20">
-        <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
 
-          <div style={{ position: "relative", width: "300px", height: "auto" }}>
+          {/* Logo */}
+          <div style={{ position: "relative", width: 300, height: 100 }}>
             <Image
               src="/strata.png"
               alt="STRATA SCHEMES MANAGEMENT ACT 2015"
-              layout="intrinsic"
               width={300}
               height={100}
-              objectFit="contain"
+              style={{ objectFit: "contain" }}
             />
           </div>
 
-          {/* 👤 Conditionally show username or Login */}
+          {/* User Info */}
           <div>
             {username ? (
               <p className="text-sm text-gray-800">
@@ -60,13 +60,14 @@ export default function Home() {
             )}
           </div>
 
-          <ol className="list-inside list-decimal text-xl text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-            <li className="mb-2 tracking-[-.01em]">STRATA SCHEMES MANAGEMENT ACT 2015</li>
-            <li className="tracking-[-.01em]">- As at 2 March 2025</li>
+          {/* Content Links */}
+          <ol className="list-inside list-decimal text-xl text-center sm:text-left font-mono">
+            <li className="mb-2 tracking-tight">STRATA SCHEMES MANAGEMENT ACT 2015</li>
+            <li className="tracking-tight">- As at 2 March 2025</li>
           </ol>
 
           <a href="/apage.html" className="text-sm underline text-blue-600 hover:text-blue-800">
-            Feedbackform
+            Feedback Form
           </a>
           <a href="/page2.html" className="text-sm underline text-green-600 hover:text-green-800">
             Notices Page

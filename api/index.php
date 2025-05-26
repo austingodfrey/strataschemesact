@@ -1,4 +1,6 @@
-<?php?>
+<?php
+$title = "STRATA SCHEMES MANAGEMENT ACT 2015";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
