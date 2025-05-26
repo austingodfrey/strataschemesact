@@ -114,63 +114,78 @@
 
   <a href="/">← Back to Home</a>
 
-  <script>
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return match ? decodeURIComponent(match[2]) : null;
+<script>
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const raw = getCookie("client_user");
+
+    if (!raw) {
+      document.getElementById("feedbackForm").style.display = "none";
+      document.getElementById("loginNotice").textContent = "⚠️ You must be logged in to submit feedback.";
+      return;
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const username = getCookie("client_user");
-      if (!username) {
-        document.getElementById("feedbackForm").style.display = "none";
-        document.getElementById("loginNotice").textContent = "⚠️ You must be logged in to submit feedback.";
-        return;
-      }
+    let userData;
+    try {
+      userData = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Invalid cookie format", e);
+      return;
+    }
 
-      document.getElementById("welcomeText").textContent = `Logged in as ${username}`;
+    document.getElementById("welcomeText").textContent = `Logged in as ${userData.username}`;
 
-      const userColor = getCookie(`bgColor_${username}`);
-      if (userColor) {
-        document.body.style.backgroundColor = userColor;
+    if (userData.bgColor) {
+      document.body.style.backgroundColor = userData.bgColor;
 
-        const darkColors = ["#121212", "#000000", "#1a1a1a"];
-        document.body.style.color = darkColors.includes(userColor.toLowerCase()) ? "white" : "black";
-      }
-    });
+      const darkColors = ["#121212", "#000000", "#1a1a1a"];
+      document.body.style.color = darkColors.includes(userData.bgColor.toLowerCase()) ? "white" : "black";
+    }
+  });
 
-    document.getElementById("feedbackForm").addEventListener("submit", async function (event) {
-      event.preventDefault();
+  document.getElementById("feedbackForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-      const username = getCookie("client_user");
-      if (!username) {
-        alert("You must be logged in to submit feedback.");
-        return;
-      }
+    const raw = getCookie("client_user");
+    if (!raw) {
+      alert("You must be logged in to submit feedback.");
+      return;
+    }
 
-      const form = event.target;
+    let userData;
+    try {
+      userData = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Invalid cookie format", e);
+      return;
+    }
 
-      const formData = {
-        name: form.fname.value,
-        feedback: form.fdescription.value,
-      };
+    const form = event.target;
+    const formData = {
+      name: form.fname.value,
+      feedback: form.fdescription.value,
+    };
 
-      form.reset();
+    form.reset();
 
-      try {
-        const res = await fetch("/api/feedback-auto", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+    try {
+      const res = await fetch("/api/feedback-auto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-        const data = await res.json();
-        alert(data.reply || "Feedback submitted successfully!");
-      } catch (err) {
-        console.error("Error:", err);
-        alert("There was an error submitting your feedback.");
-      }
-    });
-  </script>
+      const data = await res.json();
+      alert(data.reply || "Feedback submitted successfully!");
+    } catch (err) {
+      console.error("Error:", err);
+      alert("There was an error submitting your feedback.");
+    }
+  });
+</script>
 </body>
 </html>
