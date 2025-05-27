@@ -53,62 +53,66 @@
 
   <p id="message"></p>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? decodeURIComponent(match[2]) : null;
-      }
+<script>
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
 
-      const username = getCookie("client_user");
-      const welcomeEl = document.getElementById("welcomeText");
-      const formEl = document.getElementById("changeForm");
-      const messageEl = document.getElementById("message");
+  document.addEventListener("DOMContentLoaded", () => {
+    const raw = getCookie("client_user");
+    const welcomeEl = document.getElementById("welcomeText");
+    const formEl = document.getElementById("changeForm");
+    const messageEl = document.getElementById("message");
 
-      if (!username) {
-        window.location.href = "/page6.html"; // 👈 Redirect to login if no cookie
-        return;
-      }
+    if (!raw) {
+      window.location.href = "/page6.html"; // Redirect to login if not logged in
+      return;
+    }
 
-      welcomeEl.textContent = `Logged in as ${username}`;
+    let userData;
+    try {
+      userData = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Invalid client_user cookie:", e);
+      window.location.href = "/page6.html";
+      return;
+    }
 
-      formEl.addEventListener("submit", async function (e) {
-        e.preventDefault();
+    welcomeEl.textContent = `Logged in as ${userData.username}`;
 
-        const newPassword = document.getElementById("newPassword").value;
+    if (userData.bgColor) {
+      document.body.style.backgroundColor = userData.bgColor;
+      const darkColors = ["#121212", "#000000", "#1a1a1a"];
+      document.body.style.color = darkColors.includes(userData.bgColor.toLowerCase()) ? "white" : "black";
+    }
 
-        const response = await fetch("/api/change-password", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username, newPassword })
-        });
+    formEl.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-        const data = await response.json();
-        messageEl.textContent = data.message || data.error;
+      const newPassword = document.getElementById("newPassword").value;
+
+      const response = await fetch("/api/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: userData.username, newPassword })
       });
+
+      const data = await response.json();
+      messageEl.textContent = data.message || data.error;
     });
-    document.addEventListener("DOMContentLoaded", applyUserBackground);
+  });
 
-window.addEventListener("storage", (event) => {
-  if (event.key === "bgColorUpdate") {
-    location.reload(); // 🔁 Force reload when setting is updated
-  }
-});
+  // Theme sync
+  window.addEventListener("storage", (event) => {
+    if (event.key === "bgColorUpdate") {
+      location.reload();
+    }
+  });
+</script>
+<script src="/scripts/apply-theme.js"></script>
 
-function applyUserBackground() {
-  const username = document.cookie.match(/client_user=([^;]+)/)?.[1];
-  if (!username) return;
-
-  const match = document.cookie.match(new RegExp(`bgColor_${username}=([^;]+)`));
-  const color = match ? decodeURIComponent(match[1]) : null;
-
-  if (color) {
-    document.body.style.backgroundColor = color;
-  }
-}
-  </script>
-  <script src="/scripts/apply-theme.js"></script>
 </body>
 </html>
